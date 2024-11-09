@@ -30,13 +30,17 @@
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Send</button>
                 </div>
+
                 <div class="col-auto">
                     <button form="export" type="submit" class="btn btn-success">Export</button>
                 </div>
+
             </form>
-            <form action="" id="export" method="post">
+
+            <form action="download.php" id="export" method="post">
                 <input type="text" name="export" value="true" hidden="">
             </form>
+
         </div>
     </div>
     <table class="table table-primary table-hover">
@@ -53,13 +57,15 @@
         <tbody>
         <?php
         global $records;
+        $i = isset($_GET['page']) ? (int)$_GET['page'] : 0;
         foreach ($records as $record) {
+            $i++;
             echo "<tr>
-                <td>{$record['id']}</td>
+                <td>{$i}</td>
                 <td>{$record['name']}</td>
                 <td>{$record['arrived_at']}</td>
                 <td>{$record['leaved_at']}</td>
-                <td>" . gmdate('H:i',$record['required_of']) . "</td>
+                <td>" . gmdate('H:i', $record['required_of']) . "</td>
                 <td><a href='index.php?done=" . $record['id'] . "'>Done</a></td>
             </tr>";
         }
@@ -67,6 +73,25 @@
         ?>
         </tbody>
     </table>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <?php
+            global $workDay, $currentPage;
+            $disabled = $currentPage == 1 ? "disabled" : "";
+
+            ?>
+            <li class="page-item <?=$disabled?>"><a class="page-link" href="#">Previous</a></li>
+            <?php
+            $pageCount = $workDay->calculatePageCount();
+            for ($page = 1; $page <= $pageCount; $page++) {
+                $active = $page == $currentPage ? "active" : "";
+                echo "<li class='page-item $active''><a class='page-link'' href='index.php?page=" . $page . "''>" . $page . "</a></li>";
+            }
+
+            ?>
+            <li class="page-item"><a class="page-link" href="#">Next</a></li>
+        </ul>
+    </nav>
 </div>
 
 
